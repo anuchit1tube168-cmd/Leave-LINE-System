@@ -1,6 +1,7 @@
 /**
  * PDF + Google Drive storage module for RTAFNC Student Care
  * วางไฟล์นี้เป็นไฟล์ .gs เพิ่มใน Apps Script เดียวกับ Code.gs
+ * โครงโฟลเดอร์: Root / รุ่น นพอ.xx / ชั้นปี / รหัส 7 ตัว - ลำดับ 4 ตัว - ชื่อ
  */
 const PDF_SHEET_NAME = 'DriveFiles';
 const PDF_FILE_HEADERS = ['fileId','studentId','rtAfncCode','studentName','fileType','sourceId','fileName','folderId','folderUrl','fileUrl','downloadUrl','mimeType','createdAt','createdBy','note'];
@@ -14,9 +15,7 @@ function setupPdfDrive(){
 function getOrCreateRootFolder_(){
   const prop = PropertiesService.getScriptProperties();
   const existing = prop.getProperty('STUDENT_CARE_ROOT_FOLDER_ID');
-  if(existing){
-    try { return DriveApp.getFolderById(existing); } catch(err) {}
-  }
+  if(existing){ try { return DriveApp.getFolderById(existing); } catch(err) {} }
   const name = prop.getProperty('STUDENT_CARE_ROOT_FOLDER_NAME') || 'RTAFNC Student Care Files';
   const folders = DriveApp.getFoldersByName(name);
   const folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(name);
@@ -24,13 +23,38 @@ function getOrCreateRootFolder_(){
   return folder;
 }
 
+function parseRtAfncCode_(code){
+  const raw = String(code || '').replace(/\D/g,'');
+  return {
+    raw: raw,
+    cohort: raw.length >= 2 ? raw.slice(0,2) : 'ไม่ระบุรุ่น',
+    middle: raw.length === 7 ? raw.slice(2,3) : '',
+    sequence: raw.length >= 4 ? raw.slice(-4) : raw,
+    isValid7: raw.length === 7
+  };
+}
+
+function getYearFolderName_(student, parsed){
+  const y = String(student.year || student.classYear || '').trim();
+  if(y) return y.indexOf('ปี') >= 0 ? y : 'ปี ' + y;
+  return 'ไม่ระบุชั้นปี';
+}
+
+function getOrCreateChildFolder_(parent, name){
+  const safe = String(name || 'ไม่ระบุ').replace(/[\\/:*?"<>|]/g,'-');
+  const folders = parent.getFoldersByName(safe);
+  return folders.hasNext() ? folders.next() : parent.createFolder(safe);
+}
+
 function getOrCreateStudentFolder_(student){
   const root = getOrCreateRootFolder_();
-  const code = student.rtAfncCode || student.studentId;
-  const safeName = (code + ' - ' + (student.name || student.studentName || 'ไม่ระบุ')).replace(/[\\/:*?"<>|]/g,'-');
-  const folders = root.getFoldersByName(safeName);
-  const folder = folders.hasNext() ? folders.next() : root.createFolder(safeName);
-  return folder;
+  const code = student.rtAfncCode || student.studentId || '';
+  const parsed = parseRtAfncCode_(code);
+  const cohortFolder = getOrCreateChildFolder_(root, 'รุ่น นพอ.' + parsed.cohort);
+  const yearFolder = getOrCreateChildFolder_(cohortFolder, getYearFolderName_(student, parsed));
+  const studentName = student.name || student.studentName || 'ไม่ระบุชื่อ';
+  const studentFolderName = parsed.raw + ' - ลำดับ ' + parsed.sequence + ' - ' + studentName;
+  return getOrCreateChildFolder_(yearFolder, studentFolderName);
 }
 
 function createMedicalPermissionPdf(payload){
@@ -66,7 +90,7 @@ function savePdfForStudent_(student, html, filename, fileType, sourceId, created
   const blob = Utilities.newBlob(html, 'text/html', filename.replace('.pdf','.html')).getAs(MimeType.PDF).setName(filename);
   const file = folder.createFile(blob);
   try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch(err) {}
-  const row = [file.getId(), student.studentId || '', student.rtAfncCode || student.studentId || '', student.name || student.studentName || '', fileType, sourceId || '', filename, folder.getId(), folder.getUrl(), file.getUrl(), 'https://drive.google.com/uc?export=download&id=' + file.getId(), MimeType.PDF, new Date(), createdBy || 'system', ''];
+  const row = [file.getId(), student.studentId || '', student.rtAfncCode || student.studentId || '', student.name || student.studentName || '', fileType, sourceId || '', filename, folder.getId(), folder.getUrl(), file.getUrl(), 'https://drive.google.com/uc?export=download&id=' + file.getId(), MimeType.PDF, new Date(), createdBy || 'system', 'cohort=' + parseRtAfncCode_(student.rtAfncCode || student.studentId).cohort];
   getSheet_('DriveFiles').appendRow(row);
   return { ok:true, fileId:file.getId(), fileName:filename, fileUrl:file.getUrl(), downloadUrl:'https://drive.google.com/uc?export=download&id=' + file.getId(), folderId:folder.getId(), folderUrl:folder.getUrl() };
 }
