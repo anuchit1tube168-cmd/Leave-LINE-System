@@ -1,0 +1,13 @@
+{
+  "project": "leave-line-system",
+  "version": "1.0.0",
+  "deploy": {
+    "frontend": "GitHub Pages",
+    "backend": "Google Apps Script",
+    "database": "Google Sheets",
+    "notification": "LINE Messaging API",
+    "mobile": "LINE LIFF"
+  },
+  "roles": ["employee", "supervisor", "hr", "admin"],
+  "statuses": ["PENDING", "APPROVED_L1", "APPROVED", "REJECTED", "CANCELLED"]
+}
