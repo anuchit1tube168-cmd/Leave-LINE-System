@@ -1,239 +1,64 @@
 <!doctype html>
 <html lang="th">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b4db7">
   <title>ระบบลาออนไลน์ผ่าน LINE</title>
-  <meta name="description" content="ระบบลาออนไลน์ผ่าน LINE สำหรับองค์กร รองรับ LIFF, LINE Approval, HR/Admin, Supervisor และ Employee" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="css/styles.css" />
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden}body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,sans-serif;background:#eef4ff;color:#102033}.app{max-width:1180px;margin:0 auto;padding:14px}.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:16px}.side,.card{background:#fff;border:1px solid #dbe5f4;border-radius:22px;box-shadow:0 16px 40px rgba(11,77,183,.09)}.side{padding:18px;align-self:start;position:sticky;top:14px}.brand{display:flex;align-items:center;gap:12px;margin-bottom:14px}.logo{width:52px;height:52px;border-radius:18px;border:3px solid #0b4db7;background:#eaf2ff;display:grid;place-items:center;font-size:28px}.brand b{font-size:21px}.brand span{display:block;color:#06c755;font-size:20px;font-weight:900}.nav{display:grid;gap:8px}.nav button{border:0;background:transparent;text-align:left;border-radius:16px;padding:13px 14px;min-height:48px;font-weight:900;font-size:16px;color:#102033;cursor:pointer}.nav button.active{background:#0b4db7;color:#fff;box-shadow:0 10px 24px rgba(11,77,183,.25)}.badge{float:right;background:#ef4444;color:#fff;border-radius:999px;padding:2px 9px}.mode{margin-top:14px;color:#344054}.main{min-width:0}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.title h1{font-size:clamp(26px,5vw,38px);margin:0}.title p{margin:4px 0;color:#667085}.user{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #dbe5f4;border-radius:18px;padding:10px 12px}.avatar{width:42px;height:42px;border-radius:14px;background:#eaf2ff;display:grid;place-items:center;font-weight:900}.page{display:none}.page.active{display:block}.card{padding:18px;margin-bottom:14px}.hero{background:linear-gradient(135deg,#fff,#eaf2ff);display:flex;align-items:center;justify-content:space-between;gap:12px}.hero h2{margin:0 0 6px;font-size:28px}.hero p{margin:0;color:#667085}.btn{border:0;border-radius:15px;padding:12px 16px;min-height:46px;font-weight:900;cursor:pointer}.primary{background:#0b4db7;color:#fff}.ghost{background:#eff5ff;color:#0b4db7}.danger{background:#ffe5e7;color:#b42318}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{background:#fff;border:1px solid #dbe5f4;border-radius:20px;padding:17px}.stat.blue{background:#0b4db7;color:#fff}.stat strong{display:block;font-size:34px;line-height:1.1}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}.head h3{margin:0}.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form label{font-weight:800;display:grid;gap:6px}.form input,.form select,.form textarea{width:100%;border:1px solid #dbe5f4;border-radius:14px;padding:12px;font-size:16px}.full{grid-column:1/-1}.tablewrap{overflow:auto;-webkit-overflow-scrolling:touch}table{width:100%;border-collapse:collapse;min-width:620px}th,td{padding:12px;border-bottom:1px solid #dbe5f4;text-align:left}th{background:#f8fbff}.status{display:inline-block;border-radius:999px;padding:6px 10px;font-weight:900;font-size:12px}.pending{background:#fff4cc;color:#8a6100}.level1{background:#ccf5ff;color:#036980}.approved{background:#dff8e8;color:#087a3d}.rejected{background:#ffe5e7;color:#b42318}.approval{border:1px solid #dbe5f4;border-radius:18px;background:#fbfdff;padding:15px;margin-bottom:10px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}.actions{display:flex;gap:8px;align-items:center}.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.day{min-height:82px;background:#fbfdff;border:1px solid #dbe5f4;border-radius:14px;padding:9px}.event{margin-top:4px;background:#e9f1ff;color:#0b4db7;border-radius:8px;padding:4px 6px;font-size:12px}.reports{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}.toast{position:fixed;left:16px;right:16px;bottom:18px;z-index:99;background:#102033;color:#fff;border-radius:14px;padding:12px 16px;text-align:center;display:none}.toast.show{display:block}@media(max-width:900px){.app{padding:10px}.shell{display:block}.side{position:relative;top:auto;border-radius:0 0 22px 22px;margin:-10px -10px 12px;padding:14px}.brand{margin-bottom:10px}.brand b{font-size:20px}.brand span{font-size:19px}.nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.nav button{font-size:15px;min-height:46px;padding:10px 11px;line-height:1.2}.top{position:sticky;top:0;z-index:10;margin:0 -10px 12px;padding:10px;background:rgba(238,244,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid #dbe5f4}.user div:last-child{display:none}.hero{display:block}.hero .btn{width:100%;margin-top:12px}.stats,.grid2,.form{grid-template-columns:1fr}.card{padding:15px;border-radius:18px}.head{align-items:flex-start;flex-direction:column}.approval{grid-template-columns:1fr}.actions{display:grid;grid-template-columns:1fr 1fr}.calendar{grid-template-columns:repeat(2,1fr)}.day{min-height:78px}table{min-width:600px}}@media(min-width:901px) and (max-width:1180px){.shell{grid-template-columns:220px minmax(0,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <div class="avatar">👩‍💼</div>
-        <div>
-          <strong>ระบบลาออนไลน์</strong>
-          <span>ผ่าน LINE</span>
-        </div>
-      </div>
-      <nav class="nav">
-        <button class="nav-item active" data-page="dashboard">📊 แดชบอร์ด</button>
-        <button class="nav-item" data-page="request">📝 ยื่นใบลา</button>
-        <button class="nav-item" data-page="approvals">✅ คิวอนุมัติ <span class="badge" id="pendingBadge">0</span></button>
-        <button class="nav-item" data-page="calendar">📅 ปฏิทินการลา</button>
-        <button class="nav-item" data-page="employees">👥 พนักงาน</button>
-        <button class="nav-item" data-page="reports">📑 รายงาน</button>
-        <button class="nav-item" data-page="settings">⚙️ ตั้งค่า</button>
-        <button class="nav-item" data-page="guide">📘 คู่มือ</button>
+<div class="app">
+  <div class="shell">
+    <aside class="side">
+      <div class="brand"><div class="logo">👩‍💼</div><div><b>ระบบลาออนไลน์</b><span>ผ่าน LINE</span></div></div>
+      <nav class="nav" id="nav">
+        <button type="button" class="active" data-page="dashboard">📊 แดชบอร์ด</button>
+        <button type="button" data-page="request">📝 ยื่นใบลา</button>
+        <button type="button" data-page="approvals">✅ คิวอนุมัติ <span class="badge" id="badge">0</span></button>
+        <button type="button" data-page="calendar">📅 ปฏิทินการลา</button>
+        <button type="button" data-page="employees">👥 พนักงาน</button>
+        <button type="button" data-page="reports">📑 รายงาน</button>
+        <button type="button" data-page="settings">⚙️ ตั้งค่า</button>
+        <button type="button" data-page="guide">📘 คู่มือ</button>
       </nav>
-      <div class="sidebar-footer">
-        <div class="mini-status online"></div>
-        <span id="connectionText">Demo Mode</span>
-      </div>
+      <div class="mode">Demo Mode</div>
     </aside>
-
     <main class="main">
-      <header class="topbar">
-        <button class="menu-btn" id="menuBtn">☰</button>
-        <div>
-          <h1 id="pageTitle">แดชบอร์ด</h1>
-          <p id="pageSubtitle">ภาพรวมการทำงานวันนี้</p>
-        </div>
-        <div class="user-menu">
-          <span id="rolePill" class="pill blue">ผู้ดูแลระบบ</span>
-          <div class="user-avatar">ผ</div>
-          <div>
-            <strong id="userName">ผู้ดูแลระบบ</strong>
-            <small id="userRole">admin</small>
-          </div>
-        </div>
-      </header>
-
+      <header class="top"><div class="title"><h1 id="title">แดชบอร์ด</h1><p id="sub">ภาพรวมการทำงานวันนี้</p></div><div class="user"><div class="avatar">ผ</div><div><b>ผู้ดูแลระบบ</b><br><small>admin</small></div></div></header>
       <section class="page active" id="page-dashboard">
-        <div class="hero-card">
-          <div>
-            <h2>สวัสดี, <span id="helloName">ผู้ดูแลระบบ</span></h2>
-            <p>จัดการการลาได้ง่าย ครบ จบในระบบเดียว — LINE + Google Sheets + GitHub Pages</p>
-          </div>
-          <button class="primary" data-go="request">+ ยื่นใบลา</button>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-card blue"><span>⏳</span><strong id="statPending">0</strong><small>รออนุมัติ</small></div>
-          <div class="stat-card"><span>🏃</span><strong id="statToday">0</strong><small>ลาวันนี้</small></div>
-          <div class="stat-card"><span>📅</span><strong id="statMonth">0</strong><small>ลาทั้งเดือน</small></div>
-          <div class="stat-card"><span>👥</span><strong id="statEmployees">0</strong><small>พนักงานทั้งหมด</small></div>
-        </div>
-
-        <div class="grid-2">
-          <div class="panel">
-            <div class="panel-head"><h3>สัดส่วนการลาตามประเภท</h3><span>ปี 2569</span></div>
-            <div class="donut-wrap">
-              <div class="donut" id="donutChart"></div>
-              <ul class="legend" id="legendList"></ul>
-            </div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><h3>แนวโน้มการลารายเดือน</h3><span>วัน</span></div>
-            <div class="bar-chart" id="barChart"></div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-head"><h3>รายการล่าสุด</h3><button class="ghost" data-go="approvals">ดูทั้งหมด</button></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>วันที่</th><th>ชื่อ</th><th>ประเภท</th><th>จำนวนวัน</th><th>สถานะ</th></tr></thead>
-              <tbody id="recentTable"></tbody>
-            </table>
-          </div>
-        </div>
+        <div class="card hero"><div><h2>สวัสดี, ผู้ดูแลระบบ</h2><p>จัดการการลาได้ง่าย ครบ จบในระบบเดียว</p></div><button type="button" class="btn primary" data-go="request">+ ยื่นใบลา</button></div>
+        <div class="stats"><div class="stat blue"><span>⏳</span><strong id="sPending">0</strong><small>รออนุมัติ</small></div><div class="stat"><span>🏃</span><strong id="sToday">0</strong><small>ลาวันนี้</small></div><div class="stat"><span>📅</span><strong id="sMonth">0</strong><small>ลาทั้งเดือน</small></div><div class="stat"><span>👥</span><strong id="sEmp">0</strong><small>พนักงานทั้งหมด</small></div></div>
+        <div class="grid2"><div class="card"><div class="head"><h3>สัดส่วนการลา</h3><span>ปี 2569</span></div><p>🔴 ลาป่วย · 🟠 ลากิจ · 🟣 ลาพักร้อน · 🟢 ลาเหตุประจำปี</p></div><div class="card"><div class="head"><h3>งานด่วน</h3></div><button type="button" class="btn ghost" data-go="approvals">ดูคิวอนุมัติ</button></div></div>
+        <div class="card"><div class="head"><h3>รายการล่าสุด</h3><button type="button" class="btn ghost" data-go="approvals">ดูทั้งหมด</button></div><div class="tablewrap"><table><thead><tr><th>วันที่</th><th>ชื่อ</th><th>ประเภท</th><th>วัน</th><th>สถานะ</th></tr></thead><tbody id="recent"></tbody></table></div></div>
       </section>
-
-      <section class="page" id="page-request">
-        <div class="panel narrow">
-          <div class="panel-head"><h3>ยื่นใบลา</h3><span>พนักงานกรอกผ่าน LINE LIFF หรือหน้าเว็บ</span></div>
-          <form id="leaveForm" class="form-grid">
-            <label>รหัสพนักงาน
-              <select name="employeeId" required id="employeeSelect"></select>
-            </label>
-            <label>ประเภทการลา
-              <select name="leaveType" required id="leaveTypeSelect"></select>
-            </label>
-            <label>รูปแบบ
-              <select name="durationType">
-                <option value="เต็มวัน">เต็มวัน</option>
-                <option value="ครึ่งวันเช้า">ครึ่งวันเช้า</option>
-                <option value="ครึ่งวันบ่าย">ครึ่งวันบ่าย</option>
-              </select>
-            </label>
-            <label>วันเริ่ม
-              <input type="date" name="startDate" required />
-            </label>
-            <label>วันสิ้นสุด
-              <input type="date" name="endDate" required />
-            </label>
-            <label>จำนวนวันลา
-              <input type="number" name="days" min="0.5" step="0.5" value="1" required />
-            </label>
-            <label class="full">เหตุผล
-              <textarea name="reason" rows="4" placeholder="ระบุเหตุผล" required></textarea>
-            </label>
-            <label>ผู้ติดต่อระหว่างลา
-              <input name="contactName" placeholder="ชื่อ-นามสกุล" />
-            </label>
-            <label>เบอร์ติดต่อ
-              <input name="contactPhone" placeholder="08x-xxx-xxxx" />
-            </label>
-            <label class="full">เอกสารแนบ
-              <input type="file" name="attachment" />
-              <small>Demo จะบันทึกเฉพาะชื่อไฟล์ หากต่อ GAS ให้ใช้ Drive Upload</small>
-            </label>
-            <button class="primary full" type="submit">ยื่นใบลา</button>
-          </form>
-        </div>
-      </section>
-
-      <section class="page" id="page-approvals">
-        <div class="panel">
-          <div class="panel-head"><h3>คิวอนุมัติ</h3><span>อนุมัติผ่านเว็บ หรือผ่าน LINE Flex Message</span></div>
-          <div class="approval-list" id="approvalList"></div>
-        </div>
-      </section>
-
-      <section class="page" id="page-calendar">
-        <div class="panel">
-          <div class="panel-head"><h3>ปฏิทินการลารายเดือน</h3><span>เห็นชื่อผู้ลาและวันหยุดในมุมมองเดียว</span></div>
-          <div class="calendar-toolbar">
-            <button class="ghost" id="prevMonth">← เดือนก่อน</button>
-            <h3 id="monthTitle"></h3>
-            <button class="ghost" id="nextMonth">เดือนถัดไป →</button>
-          </div>
-          <div class="calendar-grid" id="calendarGrid"></div>
-        </div>
-      </section>
-
-      <section class="page" id="page-employees">
-        <div class="panel">
-          <div class="panel-head"><h3>จัดการพนักงาน & ผูก LINE</h3><button class="primary small" id="addEmployeeBtn">+ เพิ่มพนักงานตัวอย่าง</button></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>รหัส</th><th>ชื่อ</th><th>แผนก</th><th>ตำแหน่ง</th><th>Role</th><th>LINE</th></tr></thead>
-              <tbody id="employeesTable"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section class="page" id="page-reports">
-        <div class="panel">
-          <div class="panel-head"><h3>รายงานสรุปข้อมูลการลา</h3><button class="ghost" id="exportCsvBtn">Export CSV</button></div>
-          <div class="report-grid" id="reportGrid"></div>
-        </div>
-      </section>
-
-      <section class="page" id="page-settings">
-        <div class="panel narrow">
-          <div class="panel-head"><h3>ตั้งค่าระบบ</h3><span>ใส่ค่าจริงหลัง Deploy Apps Script / LINE</span></div>
-          <form id="settingsForm" class="form-grid">
-            <label class="full">Google Apps Script Web App URL
-              <input name="apiUrl" placeholder="https://script.google.com/macros/s/.../exec" />
-            </label>
-            <label>LIFF ID
-              <input name="liffId" placeholder="200xxxxxxx-xxxxxxx" />
-            </label>
-            <label>โหมดอนุมัติ
-              <select name="approvalLevels"><option value="1">1 ระดับ</option><option value="2">2 ระดับ</option></select>
-            </label>
-            <label>เวลาแจ้งเตือน
-              <input name="reminderTime" type="time" value="09:00" />
-            </label>
-            <label>เตือนก่อนวันลา (วัน)
-              <input name="reminderDays" type="number" value="2" min="0" />
-            </label>
-            <button class="primary full" type="submit">บันทึกการตั้งค่า</button>
-          </form>
-          <div class="notice">
-            Token และ Secret ต้องเก็บใน Apps Script Properties เท่านั้น ห้ามใส่ใน GitHub เด็ดขาด ไม่งั้นระบบกลายเป็นตู้กด Token ฟรีทันที
-          </div>
-        </div>
-      </section>
-
-      <section class="page" id="page-guide">
-        <div class="panel guide">
-          <h2>คู่มือใช้งานแบบเร็ว</h2>
-          <div class="tabs">
-            <button class="tab active" data-tab="first">🚀 ตั้งค่าครั้งแรก</button>
-            <button class="tab" data-tab="line">💬 LINE Approval</button>
-            <button class="tab" data-tab="hr">🖥️ HR / Admin</button>
-            <button class="tab" data-tab="supervisor">✅ ผู้อนุมัติ</button>
-            <button class="tab" data-tab="employee">📱 พนักงาน</button>
-            <button class="tab" data-tab="status">📌 สถานะ</button>
-          </div>
-          <div class="tab-panel active" id="tab-first">
-            <ol>
-              <li>สร้าง LINE OA + Messaging API Channel</li>
-              <li>สร้าง LIFF App และใส่ Endpoint เป็น GitHub Pages URL</li>
-              <li>สร้าง Google Sheet Database แล้ววาง Code.gs ใน Apps Script</li>
-              <li>Deploy Apps Script เป็น Web App แล้วเอา URL ไปใส่ใน Settings</li>
-              <li>ตั้งค่า Webhook URL ใน LINE Developers Console</li>
-            </ol>
-          </div>
-          <div class="tab-panel" id="tab-line"><p>หัวหน้าได้รับ Flex Message เมื่อมีใบลาใหม่ กดอนุมัติหรือไม่อนุมัติจาก LINE ได้ทันที ระบบตอบกลับและบันทึกสถานะอัตโนมัติ</p></div>
-          <div class="tab-panel" id="tab-hr"><p>Admin จัดการบัญชีผู้ใช้ แผนก หัวหน้า นำเข้า CSV ดูปฏิทิน รายงาน และอนุมัติขั้นสุดท้าย</p></div>
-          <div class="tab-panel" id="tab-supervisor"><p>Supervisor เห็นเฉพาะข้อมูลในแผนกตัวเอง ระบบกรอง Dashboard, คิวอนุมัติ, ใบลา และปฏิทินให้อัตโนมัติ</p></div>
-          <div class="tab-panel" id="tab-employee"><p>พนักงานเพิ่มเพื่อน LINE OA เปิด Rich Menu กรอกรหัสพนักงาน + เบอร์โทรศัพท์ เพื่อเชื่อมบัญชี จากนั้นยื่นใบลาและติดตามสถานะได้</p></div>
-          <div class="tab-panel" id="tab-status"><p><span class="status pending">รออนุมัติ</span> <span class="status level1">ผ่านระดับ 1</span> <span class="status approved">อนุมัติ</span> <span class="status rejected">ไม่อนุมัติ</span> <span class="status cancelled">ยกเลิก</span></p></div>
-        </div>
-      </section>
+      <section class="page" id="page-request"><div class="card"><div class="head"><h3>ยื่นใบลา</h3><span>กรอกผ่านมือถือได้เลย</span></div><form id="leaveForm" class="form"><label>รหัสพนักงาน<select name="employeeId" id="employeeSelect" required></select></label><label>ประเภทการลา<select name="leaveType" id="typeSelect" required></select></label><label>รูปแบบ<select name="durationType"><option>เต็มวัน</option><option>ครึ่งวันเช้า</option><option>ครึ่งวันบ่าย</option></select></label><label>จำนวนวัน<input name="days" type="number" min="0.5" step="0.5" value="1" required></label><label>วันเริ่ม<input name="startDate" type="date" required></label><label>วันสิ้นสุด<input name="endDate" type="date" required></label><label class="full">เหตุผล<textarea name="reason" rows="4" required placeholder="ระบุเหตุผล"></textarea></label><button class="btn primary full" type="submit">ยื่นใบลา</button></form></div></section>
+      <section class="page" id="page-approvals"><div class="card"><div class="head"><h3>คิวอนุมัติ</h3><span>กดอนุมัติ/ไม่อนุมัติได้ทันที</span></div><div id="approvalList"></div></div></section>
+      <section class="page" id="page-calendar"><div class="card"><div class="head"><h3 id="monthTitle">ปฏิทินการลา</h3><div><button type="button" class="btn ghost" id="prevM">←</button> <button type="button" class="btn ghost" id="nextM">→</button></div></div><div class="calendar" id="cal"></div></div></section>
+      <section class="page" id="page-employees"><div class="card"><div class="head"><h3>พนักงาน</h3><button type="button" class="btn primary" id="addEmp">+ เพิ่มตัวอย่าง</button></div><div class="tablewrap"><table><thead><tr><th>รหัส</th><th>ชื่อ</th><th>แผนก</th><th>Role</th><th>LINE</th></tr></thead><tbody id="empTable"></tbody></table></div></div></section>
+      <section class="page" id="page-reports"><div class="card"><div class="head"><h3>รายงาน</h3><button type="button" class="btn ghost" id="exportCsv">Export CSV</button></div><div class="reports" id="reports"></div></div></section>
+      <section class="page" id="page-settings"><div class="card"><div class="head"><h3>ตั้งค่า</h3><span>Demo Mode</span></div><form class="form" id="settings"><label class="full">Google Apps Script URL<input name="apiUrl" placeholder="https://script.google.com/macros/s/.../exec"></label><label>LIFF ID<input name="liffId" placeholder="200xxxxxxx"></label><label>อนุมัติ<select name="approvalLevels"><option value="1">1 ระดับ</option><option value="2" selected>2 ระดับ</option></select></label><button class="btn primary full" type="submit">บันทึก</button></form></div></section>
+      <section class="page" id="page-guide"><div class="card"><h3>คู่มือเร็ว</h3><p>1) ยื่นใบลา → 2) หัวหน้าอนุมัติ → 3) HR อนุมัติ → 4) ระบบบันทึกและแจ้งผลผ่าน LINE</p><p>ถ้าจะใช้จริง ให้นำ Code.gs ไปวางใน Apps Script แล้วตั้งค่า LINE OA / LIFF</p></div></section>
     </main>
   </div>
-
-  <div class="toast" id="toast"></div>
-  <script src="js/config.example.js"></script>
-  <script src="js/app.js"></script>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const TYPES=['ลาป่วย','ลากิจ','ลาพักร้อน','ลาเหตุประจำปี'];
+const EMP=[{id:'EMP001',name:'ผู้ดูแลระบบ',dep:'HR',role:'admin',line:'ผูกแล้ว'},{id:'EMP002',name:'หัวหน้าแผนกตัวอย่าง',dep:'ฝ่ายปกครอง',role:'supervisor',line:'ผูกแล้ว'},{id:'EMP003',name:'พนักงานตัวอย่าง',dep:'ฝ่ายปกครอง',role:'employee',line:'ยังไม่ผูก'}];
+const MONTHS=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+let emps=JSON.parse(localStorage.leave_emps||'null')||EMP, reqs=JSON.parse(localStorage.leave_reqs||'null')||[{id:'LV-DEMO',employeeId:'EMP003',employeeName:'พนักงานตัวอย่าง',dep:'ฝ่ายปกครอง',type:'ลากิจ',start:today(),end:today(),days:1,reason:'ธุระจำเป็น',status:'PENDING'}], month=new Date();
+function $(q){return document.querySelector(q)}function $$(q){return [...document.querySelectorAll(q)]}function today(){return new Date().toISOString().slice(0,10)}function save(){localStorage.leave_emps=JSON.stringify(emps);localStorage.leave_reqs=JSON.stringify(reqs)}function toast(t){$('#toast').textContent=t;$('#toast').classList.add('show');setTimeout(()=>$('#toast').classList.remove('show'),1800)}function st(s){return {PENDING:'รออนุมัติ',APPROVED_L1:'ผ่านระดับ 1',APPROVED:'อนุมัติ',REJECTED:'ไม่อนุมัติ'}[s]||s}function cls(s){return {PENDING:'pending',APPROVED_L1:'level1',APPROVED:'approved',REJECTED:'rejected'}[s]||'pending'}
+function show(p){$$('.page').forEach(x=>x.classList.remove('active'));$('#page-'+p).classList.add('active');$$('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));$('#title').textContent={dashboard:'แดชบอร์ด',request:'ยื่นใบลา',approvals:'คิวอนุมัติ',calendar:'ปฏิทินการลา',employees:'พนักงาน',reports:'รายงาน',settings:'ตั้งค่า',guide:'คู่มือ'}[p];$('#sub').textContent=p==='dashboard'?'ภาพรวมการทำงานวันนี้':'ระบบลาออนไลน์ผ่าน LINE';render();scrollTo(0,0)}
+function render(){let pend=reqs.filter(r=>r.status==='PENDING'||r.status==='APPROVED_L1').length;$('#badge').textContent=pend;$('#sPending').textContent=pend;$('#sToday').textContent=reqs.filter(r=>r.start<=today()&&r.end>=today()&&r.status!=='REJECTED').length;$('#sMonth').textContent=reqs.filter(r=>r.start.slice(0,7)===today().slice(0,7)).length;$('#sEmp').textContent=emps.length;$('#recent').innerHTML=reqs.slice().reverse().map(r=>`<tr><td>${r.start}</td><td>${r.employeeName}</td><td>${r.type}</td><td>${r.days}</td><td><span class="status ${cls(r.status)}">${st(r.status)}</span></td></tr>`).join('');$('#approvalList').innerHTML=reqs.filter(r=>r.status==='PENDING'||r.status==='APPROVED_L1').map(r=>`<div class="approval"><div><b>${r.employeeName}</b> — ${r.type}<br><small>${r.start} ถึง ${r.end} · ${r.days} วัน · ${r.reason}</small><br><span class="status ${cls(r.status)}">${st(r.status)}</span></div><div class="actions"><button type="button" class="btn danger" data-reject="${r.id}">ไม่อนุมัติ</button><button type="button" class="btn primary" data-approve="${r.id}">อนุมัติ</button></div></div>`).join('')||'<p>ไม่มีรายการรออนุมัติ</p>';$('#empTable').innerHTML=emps.map(e=>`<tr><td>${e.id}</td><td>${e.name}</td><td>${e.dep}</td><td>${e.role}</td><td>${e.line}</td></tr>`).join('');$('#reports').innerHTML=emps.map(e=>{let used=reqs.filter(r=>r.employeeId===e.id&&r.status==='APPROVED').reduce((s,r)=>s+Number(r.days),0),p=reqs.filter(r=>r.employeeId===e.id&&(r.status==='PENDING'||r.status==='APPROVED_L1')).reduce((s,r)=>s+Number(r.days),0);return `<div class="stat"><b>${e.name}</b><p>${e.dep}</p><p>ใช้แล้ว ${used} วัน<br>รอ ${p} วัน</p></div>`}).join('');renderCal()}
+function fill(){employeeSelect.innerHTML=emps.map(e=>`<option value="${e.id}">${e.id} — ${e.name}</option>`).join('');typeSelect.innerHTML=TYPES.map(t=>`<option>${t}</option>`).join('')}
+function renderCal(){let y=month.getFullYear(),m=month.getMonth(),last=new Date(y,m+1,0).getDate();$('#monthTitle').textContent=MONTHS[m]+' '+(y+543);let html='';for(let i=1;i<=last;i++){let d=new Date(y,m,i).toISOString().slice(0,10),ev=reqs.filter(r=>r.start<=d&&r.end>=d&&r.status!=='REJECTED');html+=`<div class="day"><b>${i}</b>${ev.map(e=>`<div class="event">${e.employeeName}</div>`).join('')}</div>`}$('#cal').innerHTML=html}
+document.addEventListener('click',e=>{let nav=e.target.closest('[data-page]');if(nav){e.preventDefault();show(nav.dataset.page);return}let go=e.target.closest('[data-go]');if(go){e.preventDefault();show(go.dataset.go);return}let ap=e.target.closest('[data-approve]');if(ap){let r=reqs.find(x=>x.id===ap.dataset.approve);if(r){r.status=r.status==='PENDING'?'APPROVED_L1':'APPROVED';save();render();toast('อนุมัติแล้ว')}return}let re=e.target.closest('[data-reject]');if(re){let r=reqs.find(x=>x.id===re.dataset.reject);if(r){r.status='REJECTED';save();render();toast('ไม่อนุมัติแล้ว')}return}});
+leaveForm.addEventListener('submit',e=>{e.preventDefault();let f=Object.fromEntries(new FormData(e.target).entries()),emp=emps.find(x=>x.id===f.employeeId);reqs.push({id:'LV-'+Date.now(),employeeId:emp.id,employeeName:emp.name,dep:emp.dep,type:f.leaveType,start:f.startDate,end:f.endDate,days:Number(f.days||1),reason:f.reason,status:'PENDING'});save();e.target.reset();toast('ยื่นใบลาแล้ว');show('dashboard')});
+addEmp.onclick=()=>{let n=emps.length+1;emps.push({id:'EMP00'+n,name:'พนักงานใหม่ '+n,dep:'ฝ่ายปกครอง',role:'employee',line:'ยังไม่ผูก'});save();fill();render();toast('เพิ่มพนักงานแล้ว')};prevM.onclick=()=>{month=new Date(month.getFullYear(),month.getMonth()-1,1);renderCal()};nextM.onclick=()=>{month=new Date(month.getFullYear(),month.getMonth()+1,1);renderCal()};settings.onsubmit=e=>{e.preventDefault();toast('บันทึกการตั้งค่าแล้ว')};exportCsv.onclick=()=>{let csv='id,name,type,start,end,days,status\n'+reqs.map(r=>[r.id,r.employeeName,r.type,r.start,r.end,r.days,r.status].join(',')).join('\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='leave-report.csv';a.click()};
+fill();render();
+</script>
 </body>
 </html>
