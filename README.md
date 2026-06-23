@@ -1,43 +1,87 @@
-# ระบบลาออนไลน์ผ่าน LINE
+# RTAFNC Student Care LIFF Dashboard
 
-โปรเจกต์ Web App สำหรับจัดการการลาในองค์กร ถอดจากภาพต้นแบบและจัดชุดให้พร้อมขึ้น GitHub Pages + Google Apps Script + Google Sheets + LINE LIFF
+ระบบดูแลนักเรียนผ่าน LINE Official Account เดิมของวิทยาลัย รองรับงานหลัก 3 ส่วน:
 
-## ฟีเจอร์หลัก
-- Dashboard ภาพรวมการลา
-- ยื่นใบลาผ่านเว็บ/มือถือ/LINE LIFF
-- คิวอนุมัติสำหรับหัวหน้าและ HR
-- ปฏิทินการลารายเดือน
-- จัดการพนักงานและสถานะผูก LINE
-- รายงานสรุปรายบุคคล
-- Backend Google Apps Script
-- ใช้ Google Sheets เป็นฐานข้อมูล
+- แจ้งไปโรงพยาบาล
+- ยื่นใบลา
+- อาจารย์อนุมัติผ่าน Teacher Board
 
-## โครงไฟล์
+ออกแบบสำหรับนักเรียนประมาณ 300 คน และเคสไปโรงพยาบาลเฉลี่ย 10 คนต่อวัน
+
+## Demo
+
+เปิดผ่าน GitHub Pages:
+
 ```text
-index.html
-css/styles.css
-js/app.js
-js/config.example.js
-apps-script/Code.gs
-data/*.csv
-docs/*.md
-SKILL.md
-.github/workflows/pages.yml
+https://anuchit1tube168-cmd.github.io/Leave-LINE-System/
 ```
 
-## ทดสอบเร็ว
-เปิด `index.html` แล้วทดลองกดยื่นใบลา / อนุมัติ / ดูรายงานได้ทันที ระบบจะใช้ LocalStorage เป็น Demo Mode
+## ฟีเจอร์หน้า LIFF
 
-## ใช้งานจริง
-1. เปิด Google Sheet แล้วไปที่ Extensions > Apps Script
-2. วางโค้ดจาก `apps-script/Code.gs`
-3. Run `setup()` หนึ่งครั้ง
-4. Deploy เป็น Web App
-5. นำ Web App URL ไปใส่ใน LINE Webhook และหน้า Settings
-6. ตั้งค่า LIFF Endpoint URL เป็น URL ของ GitHub Pages
+- Mobile-first dashboard แบบ LIFF Board
+- Role switch: นักเรียน / อาจารย์ / Admin
+- แจ้งไป รพ. พร้อมเวลาออกและอาการ
+- ยื่นใบลา
+- Teacher Approval Board
+- ปุ่มบันทึกกลับแล้ว
+- Admin จำลองข้อมูล 10 คนต่อวัน
+- Export CSV รายงาน
+- พร้อมต่อ LIFF SDK และ Google Apps Script
 
-## GitHub Pages
-เมื่อ Push เข้า `main` แล้ว Workflow จะ deploy static site อัตโนมัติ หรือเปิด Settings > Pages แล้วเลือก GitHub Actions
+## Flow ระบบจริง
 
-## ความปลอดภัย
-อย่าใส่ค่า secret ของ LINE ลงในไฟล์หน้าเว็บหรือ repository ให้เก็บไว้ใน Apps Script Properties เท่านั้น
+```text
+นักเรียนกด Rich Menu ใน LINE OA
+↓
+เปิด LIFF Dashboard
+↓
+ลงทะเบียนครั้งแรกเพื่อผูก studentId + lineUserId
+↓
+แจ้งไป รพ. / ยื่นลา
+↓
+Apps Script บันทึกลง Google Sheets
+↓
+LINE Push แจ้งเฉพาะอาจารย์ผู้อนุมัติ
+↓
+อาจารย์กดอนุมัติใน Teacher Board
+↓
+แจ้งผลกลับเฉพาะนักเรียนคนนั้น
+```
+
+## Backend
+
+ใช้ไฟล์:
+
+```text
+apps-script/Code.gs
+```
+
+เมื่อนำไปวางใน Apps Script แล้วรัน:
+
+```text
+setup
+```
+
+ระบบจะสร้างชีต:
+
+```text
+Students
+Teachers
+Requests
+Settings
+Logs
+```
+
+## คู่มือติดตั้ง
+
+ดูรายละเอียดที่:
+
+```text
+docs/GOOGLE-APPS-SCRIPT.md
+```
+
+## ข้อควรระวัง
+
+ห้ามใส่ LINE Channel Access Token ใน GitHub หรือ index.html
+
+ให้ใส่ใน Apps Script > Project Settings > Script Properties เท่านั้น
