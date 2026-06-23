@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ระบบลาออนไลน์ผ่าน LINE</title>
+  <meta name="description" content="ระบบลาออนไลน์ผ่าน LINE สำหรับองค์กร รองรับ LIFF, LINE Approval, HR/Admin, Supervisor และ Employee" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="avatar">👩‍💼</div>
+        <div>
+          <strong>ระบบลาออนไลน์</strong>
+          <span>ผ่าน LINE</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-page="dashboard">📊 แดชบอร์ด</button>
+        <button class="nav-item" data-page="request">📝 ยื่นใบลา</button>
+        <button class="nav-item" data-page="approvals">✅ คิวอนุมัติ <span class="badge" id="pendingBadge">0</span></button>
+        <button class="nav-item" data-page="calendar">📅 ปฏิทินการลา</button>
+        <button class="nav-item" data-page="employees">👥 พนักงาน</button>
+        <button class="nav-item" data-page="reports">📑 รายงาน</button>
+        <button class="nav-item" data-page="settings">⚙️ ตั้งค่า</button>
+        <button class="nav-item" data-page="guide">📘 คู่มือ</button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="mini-status online"></div>
+        <span id="connectionText">Demo Mode</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <div>
+          <h1 id="pageTitle">แดชบอร์ด</h1>
+          <p id="pageSubtitle">ภาพรวมการทำงานวันนี้</p>
+        </div>
+        <div class="user-menu">
+          <span id="rolePill" class="pill blue">ผู้ดูแลระบบ</span>
+          <div class="user-avatar">ผ</div>
+          <div>
+            <strong id="userName">ผู้ดูแลระบบ</strong>
+            <small id="userRole">admin</small>
+          </div>
+        </div>
+      </header>
+
+      <section class="page active" id="page-dashboard">
+        <div class="hero-card">
+          <div>
+            <h2>สวัสดี, <span id="helloName">ผู้ดูแลระบบ</span></h2>
+            <p>จัดการการลาได้ง่าย ครบ จบในระบบเดียว — LINE + Google Sheets + GitHub Pages</p>
+          </div>
+          <button class="primary" data-go="request">+ ยื่นใบลา</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card blue"><span>⏳</span><strong id="statPending">0</strong><small>รออนุมัติ</small></div>
+          <div class="stat-card"><span>🏃</span><strong id="statToday">0</strong><small>ลาวันนี้</small></div>
+          <div class="stat-card"><span>📅</span><strong id="statMonth">0</strong><small>ลาทั้งเดือน</small></div>
+          <div class="stat-card"><span>👥</span><strong id="statEmployees">0</strong><small>พนักงานทั้งหมด</small></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><h3>สัดส่วนการลาตามประเภท</h3><span>ปี 2569</span></div>
+            <div class="donut-wrap">
+              <div class="donut" id="donutChart"></div>
+              <ul class="legend" id="legendList"></ul>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>แนวโน้มการลารายเดือน</h3><span>วัน</span></div>
+            <div class="bar-chart" id="barChart"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>รายการล่าสุด</h3><button class="ghost" data-go="approvals">ดูทั้งหมด</button></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>วันที่</th><th>ชื่อ</th><th>ประเภท</th><th>จำนวนวัน</th><th>สถานะ</th></tr></thead>
+              <tbody id="recentTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-request">
+        <div class="panel narrow">
+          <div class="panel-head"><h3>ยื่นใบลา</h3><span>พนักงานกรอกผ่าน LINE LIFF หรือหน้าเว็บ</span></div>
+          <form id="leaveForm" class="form-grid">
+            <label>รหัสพนักงาน
+              <select name="employeeId" required id="employeeSelect"></select>
+            </label>
+            <label>ประเภทการลา
+              <select name="leaveType" required id="leaveTypeSelect"></select>
+            </label>
+            <label>รูปแบบ
+              <select name="durationType">
+                <option value="เต็มวัน">เต็มวัน</option>
+                <option value="ครึ่งวันเช้า">ครึ่งวันเช้า</option>
+                <option value="ครึ่งวันบ่าย">ครึ่งวันบ่าย</option>
+              </select>
+            </label>
+            <label>วันเริ่ม
+              <input type="date" name="startDate" required />
+            </label>
+            <label>วันสิ้นสุด
+              <input type="date" name="endDate" required />
+            </label>
+            <label>จำนวนวันลา
+              <input type="number" name="days" min="0.5" step="0.5" value="1" required />
+            </label>
+            <label class="full">เหตุผล
+              <textarea name="reason" rows="4" placeholder="ระบุเหตุผล" required></textarea>
+            </label>
+            <label>ผู้ติดต่อระหว่างลา
+              <input name="contactName" placeholder="ชื่อ-นามสกุล" />
+            </label>
+            <label>เบอร์ติดต่อ
+              <input name="contactPhone" placeholder="08x-xxx-xxxx" />
+            </label>
+            <label class="full">เอกสารแนบ
+              <input type="file" name="attachment" />
+              <small>Demo จะบันทึกเฉพาะชื่อไฟล์ หากต่อ GAS ให้ใช้ Drive Upload</small>
+            </label>
+            <button class="primary full" type="submit">ยื่นใบลา</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="page" id="page-approvals">
+        <div class="panel">
+          <div class="panel-head"><h3>คิวอนุมัติ</h3><span>อนุมัติผ่านเว็บ หรือผ่าน LINE Flex Message</span></div>
+          <div class="approval-list" id="approvalList"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-calendar">
+        <div class="panel">
+          <div class="panel-head"><h3>ปฏิทินการลารายเดือน</h3><span>เห็นชื่อผู้ลาและวันหยุดในมุมมองเดียว</span></div>
+          <div class="calendar-toolbar">
+            <button class="ghost" id="prevMonth">← เดือนก่อน</button>
+            <h3 id="monthTitle"></h3>
+            <button class="ghost" id="nextMonth">เดือนถัดไป →</button>
+          </div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-employees">
+        <div class="panel">
+          <div class="panel-head"><h3>จัดการพนักงาน & ผูก LINE</h3><button class="primary small" id="addEmployeeBtn">+ เพิ่มพนักงานตัวอย่าง</button></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>รหัส</th><th>ชื่อ</th><th>แผนก</th><th>ตำแหน่ง</th><th>Role</th><th>LINE</th></tr></thead>
+              <tbody id="employeesTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-reports">
+        <div class="panel">
+          <div class="panel-head"><h3>รายงานสรุปข้อมูลการลา</h3><button class="ghost" id="exportCsvBtn">Export CSV</button></div>
+          <div class="report-grid" id="reportGrid"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="panel narrow">
+          <div class="panel-head"><h3>ตั้งค่าระบบ</h3><span>ใส่ค่าจริงหลัง Deploy Apps Script / LINE</span></div>
+          <form id="settingsForm" class="form-grid">
+            <label class="full">Google Apps Script Web App URL
+              <input name="apiUrl" placeholder="https://script.google.com/macros/s/.../exec" />
+            </label>
+            <label>LIFF ID
+              <input name="liffId" placeholder="200xxxxxxx-xxxxxxx" />
+            </label>
+            <label>โหมดอนุมัติ
+              <select name="approvalLevels"><option value="1">1 ระดับ</option><option value="2">2 ระดับ</option></select>
+            </label>
+            <label>เวลาแจ้งเตือน
+              <input name="reminderTime" type="time" value="09:00" />
+            </label>
+            <label>เตือนก่อนวันลา (วัน)
+              <input name="reminderDays" type="number" value="2" min="0" />
+            </label>
+            <button class="primary full" type="submit">บันทึกการตั้งค่า</button>
+          </form>
+          <div class="notice">
+            Token และ Secret ต้องเก็บใน Apps Script Properties เท่านั้น ห้ามใส่ใน GitHub เด็ดขาด ไม่งั้นระบบกลายเป็นตู้กด Token ฟรีทันที
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-guide">
+        <div class="panel guide">
+          <h2>คู่มือใช้งานแบบเร็ว</h2>
+          <div class="tabs">
+            <button class="tab active" data-tab="first">🚀 ตั้งค่าครั้งแรก</button>
+            <button class="tab" data-tab="line">💬 LINE Approval</button>
+            <button class="tab" data-tab="hr">🖥️ HR / Admin</button>
+            <button class="tab" data-tab="supervisor">✅ ผู้อนุมัติ</button>
+            <button class="tab" data-tab="employee">📱 พนักงาน</button>
+            <button class="tab" data-tab="status">📌 สถานะ</button>
+          </div>
+          <div class="tab-panel active" id="tab-first">
+            <ol>
+              <li>สร้าง LINE OA + Messaging API Channel</li>
+              <li>สร้าง LIFF App และใส่ Endpoint เป็น GitHub Pages URL</li>
+              <li>สร้าง Google Sheet Database แล้ววาง Code.gs ใน Apps Script</li>
+              <li>Deploy Apps Script เป็น Web App แล้วเอา URL ไปใส่ใน Settings</li>
+              <li>ตั้งค่า Webhook URL ใน LINE Developers Console</li>
+            </ol>
+          </div>
+          <div class="tab-panel" id="tab-line"><p>หัวหน้าได้รับ Flex Message เมื่อมีใบลาใหม่ กดอนุมัติหรือไม่อนุมัติจาก LINE ได้ทันที ระบบตอบกลับและบันทึกสถานะอัตโนมัติ</p></div>
+          <div class="tab-panel" id="tab-hr"><p>Admin จัดการบัญชีผู้ใช้ แผนก หัวหน้า นำเข้า CSV ดูปฏิทิน รายงาน และอนุมัติขั้นสุดท้าย</p></div>
+          <div class="tab-panel" id="tab-supervisor"><p>Supervisor เห็นเฉพาะข้อมูลในแผนกตัวเอง ระบบกรอง Dashboard, คิวอนุมัติ, ใบลา และปฏิทินให้อัตโนมัติ</p></div>
+          <div class="tab-panel" id="tab-employee"><p>พนักงานเพิ่มเพื่อน LINE OA เปิด Rich Menu กรอกรหัสพนักงาน + เบอร์โทรศัพท์ เพื่อเชื่อมบัญชี จากนั้นยื่นใบลาและติดตามสถานะได้</p></div>
+          <div class="tab-panel" id="tab-status"><p><span class="status pending">รออนุมัติ</span> <span class="status level1">ผ่านระดับ 1</span> <span class="status approved">อนุมัติ</span> <span class="status rejected">ไม่อนุมัติ</span> <span class="status cancelled">ยกเลิก</span></p></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="js/config.example.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
