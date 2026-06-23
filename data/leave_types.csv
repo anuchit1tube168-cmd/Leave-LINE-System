@@ -1,0 +1,5 @@
+code,name,annualQuota,requiresAttachment,color,active
+SICK,ลาป่วย,30,yes,#ef4444,yes
+PERSONAL,ลากิจ,10,no,#f59e0b,yes
+VACATION,ลาพักร้อน,10,no,#ec4899,yes
+ANNUAL,ลาเหตุประจำปี,15,no,#10b981,yes
