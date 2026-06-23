@@ -26,7 +26,8 @@ const HEAD = {
 function setup(){
   Object.keys(HEAD).forEach(function(name){ ensureSheet_(name, HEAD[name]); });
   seed_();
-  return { ok:true, message:'Student Care backend ready', sheets:Object.keys(HEAD) };
+  if(typeof setupPdfDrive === 'function') setupPdfDrive();
+  return { ok:true, message:'Student Care backend ready', sheets:Object.keys(HEAD).concat(['DriveFiles']) };
 }
 
 function doGet(e){
@@ -37,6 +38,7 @@ function doGet(e){
   if(action === 'dashboard') return json_(dashboard_());
   if(action === 'list') return json_({ ok:true, students:list_(SHEET.STUDENTS), teachers:list_(SHEET.TEACHERS), requests:list_(SHEET.REQUESTS) });
   if(action === 'medicalHistory') return json_(getMedicalHistory_(p.studentId || p.rtAfncCode || ''));
+  if(action === 'studentFiles') return json_(listStudentFiles({ studentId:p.studentId, rtAfncCode:p.rtAfncCode, key:p.key }));
   return json_({ ok:false, error:'unknown action', action:action });
 }
 
@@ -54,6 +56,10 @@ function doPost(e){
   if(action === 'createMedicalPermission') return json_(createMedicalPermission_(payload));
   if(action === 'createMedicalRecord') return json_(createMedicalRecord_(payload));
   if(action === 'medicalHistory') return json_(getMedicalHistory_(payload.studentId || payload.rtAfncCode || ''));
+  if(action === 'createMedicalPermissionPdf') return json_(createMedicalPermissionPdf(payload));
+  if(action === 'createMedicalRecordPdf') return json_(createMedicalRecordPdf(payload));
+  if(action === 'createStudentSummaryPdf') return json_(createStudentSummaryPdf(payload));
+  if(action === 'studentFiles') return json_(listStudentFiles(payload));
   if(action === 'approve') return json_(setStatus_(payload.requestId, payload.nextStatus || 'APPROVED', payload.actor || '', payload.comment || ''));
   if(action === 'reject') return json_(setStatus_(payload.requestId, 'REJECTED', payload.actor || '', payload.comment || ''));
   if(action === 'markBack') return json_(markBack_(payload.requestId, payload.actor || ''));
@@ -67,7 +73,8 @@ function dashboard_(){
   const pending = reqs.filter(function(r){ return ['PENDING','APPROVED_L1'].indexOf(String(r.status)) >= 0; });
   const hospitalToday = todayReqs.filter(function(r){ return r.kind === 'hospital'; });
   const out = hospitalToday.filter(function(r){ return ['BACK','REJECTED'].indexOf(String(r.status)) < 0; });
-  return { ok:true, today:today, totalStudents:list_(SHEET.STUDENTS).length, hospitalToday:hospitalToday.length, stillOut:out.length, pending:pending.length, medicalToday:list_(SHEET.MEDICAL_RECORDS).filter(function(r){return String(r.visitDate)===today;}).length, requests:reqs.slice(-50).reverse() };
+  const files = typeof listStudentFiles === 'function' ? list_('DriveFiles') : [];
+  return { ok:true, today:today, totalStudents:list_(SHEET.STUDENTS).length, hospitalToday:hospitalToday.length, stillOut:out.length, pending:pending.length, medicalToday:list_(SHEET.MEDICAL_RECORDS).filter(function(r){return String(r.visitDate)===today;}).length, pdfFiles:files.length, requests:reqs.slice(-50).reverse() };
 }
 
 function registerStudent_(p){
@@ -88,10 +95,11 @@ function createHospital_(p){
   const teacher = resolveTeacher_(p.teacherId);
   const id = 'H-' + stamp_();
   appendRequest_({ requestId:id, kind:'hospital', studentId:student.studentId, studentName:student.name, year:student.year, title:'ไปโรงพยาบาล', detail:p.symptom || p.detail || '', place:p.place || '', startDate:dateKey_(new Date()), endDate:dateKey_(new Date()), days:0, timeOut:p.timeOut || timeText_(new Date()), timeBack:'', teacherId:teacher.teacherId || '', teacherLineUserId:teacher.lineUserId || '', status:'PENDING', approver:'', comment:'' });
-  createMedicalPermission_({ requestId:id, studentId:student.studentId, rtAfncCode:student.rtAfncCode, destination:p.place || '', reason:p.reason || 'มีอาการผิดปกติ', department:p.department || '', chiefComplaint:p.symptom || p.detail || '', status:'PENDING' });
+  const perm = createMedicalPermission_({ requestId:id, studentId:student.studentId, rtAfncCode:student.rtAfncCode, destination:p.place || '', reason:p.reason || 'มีอาการผิดปกติ', department:p.department || '', chiefComplaint:p.symptom || p.detail || '', status:'PENDING' });
+  if(p.createPdf && typeof createMedicalPermissionPdf === 'function') createMedicalPermissionPdf({ permissionId:perm.permissionId, requestId:id, studentId:student.studentId, rtAfncCode:student.rtAfncCode, destination:p.place || '', reason:p.reason || 'มีอาการผิดปกติ', department:p.department || '', chiefComplaint:p.symptom || p.detail || '', status:'PENDING' });
   notifyTeacher_(teacher.lineUserId, 'มีคำขอไปโรงพยาบาล', student.name + ' / ' + (p.symptom || p.detail || '-'));
   log_(student.studentId, 'createHospital', id, p.symptom || '');
-  return { ok:true, requestId:id, notified:!!teacher.lineUserId };
+  return { ok:true, requestId:id, permissionId:perm.permissionId, notified:!!teacher.lineUserId };
 }
 
 function createLeave_(p){
@@ -116,8 +124,10 @@ function createMedicalRecord_(p){
   const student = getStudent_(p);
   const id = p.medicalRecordId || 'MR-' + stamp_();
   getSheet_(SHEET.MEDICAL_RECORDS).appendRow([id, student.studentId, student.rtAfncCode || student.studentId, student.name, student.year || '', p.visitDate || dateKey_(new Date()), p.visitTime || timeText_(new Date()), p.destination || '', p.department || '', p.reason || '', p.chiefComplaint || '', p.diagnosis || '', p.treatment || '', p.medication || '', p.vaccine || '', p.doctorName || '', p.sourcePermissionId || p.permissionId || '', p.recordedBy || '', p.recordStatus || 'RECORDED', p.note || '', new Date(), new Date()]);
+  let pdf = null;
+  if(p.createPdf && typeof createMedicalRecordPdf === 'function') pdf = createMedicalRecordPdf(Object.assign({}, p, { medicalRecordId:id, studentId:student.studentId, rtAfncCode:student.rtAfncCode }));
   log_(student.studentId, 'createMedicalRecord', id, p.diagnosis || '');
-  return { ok:true, medicalRecordId:id, studentId:student.studentId, rtAfncCode:student.rtAfncCode || student.studentId };
+  return { ok:true, medicalRecordId:id, studentId:student.studentId, rtAfncCode:student.rtAfncCode || student.studentId, pdf:pdf };
 }
 
 function getMedicalHistory_(key){
@@ -128,7 +138,8 @@ function getMedicalHistory_(key){
   const permissions = list_(SHEET.MEDICAL_PERMISSIONS).filter(function(r){ return String(r.studentId)===sid || String(r.rtAfncCode)===code; }).reverse();
   const records = list_(SHEET.MEDICAL_RECORDS).filter(function(r){ return String(r.studentId)===sid || String(r.rtAfncCode)===code; }).reverse();
   const requests = list_(SHEET.REQUESTS).filter(function(r){ return String(r.studentId)===sid && (r.kind==='hospital' || r.kind==='leave'); }).reverse();
-  return { ok:true, student:student, permissions:permissions, medicalRecords:records, requests:requests };
+  const files = typeof listStudentFiles === 'function' ? listStudentFiles({ studentId:sid, rtAfncCode:code }).files : [];
+  return { ok:true, student:student, permissions:permissions, medicalRecords:records, requests:requests, files:files };
 }
 
 function appendRequest_(o){
