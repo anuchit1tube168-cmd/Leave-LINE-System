@@ -1,0 +1,5 @@
+employeeId,name,department,position,email,phone,role,supervisorId,lineUserId,active
+EMP001,ผู้ดูแลระบบ,HR,Admin,admin@example.com,,admin,,,yes
+EMP002,หัวหน้าแผนกตัวอย่าง,ฝ่ายปกครอง,Supervisor,,,supervisor,,,yes
+EMP003,พนักงานตัวอย่าง,ฝ่ายปกครอง,Staff,,,employee,EMP002,,yes
+EMP004,HR ตัวอย่าง,HR,HR,,,hr,,,yes
