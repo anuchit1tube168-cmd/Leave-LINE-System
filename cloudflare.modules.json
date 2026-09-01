@@ -1,0 +1,20 @@
+{
+  "phase": "2A",
+  "productionCutover": false,
+  "productionWrites": false,
+  "modules": [
+    {
+      "module": "leave",
+      "gatewayPath": "/api/leave",
+      "classification": "restricted-personal",
+      "serverOnly": ["studentMaster", "lineUserId", "leaveRequests", "approvalAudit"]
+    },
+    {
+      "module": "hospital",
+      "gatewayPath": "/api/hospital",
+      "classification": "highly-sensitive-health",
+      "serverOnly": ["studentMaster", "lineUserId", "symptoms", "hospitalVisits", "appointments", "medicalEvidence", "healthAudit"]
+    }
+  ],
+  "requiredControls": ["lineServerVerification", "session", "rbac", "minimumNecessary", "audit", "originAllowlist", "requestValidation", "rateLimit", "noBrowserPersistence", "noStore"]
+}
