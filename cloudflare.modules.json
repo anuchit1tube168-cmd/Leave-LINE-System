@@ -1,10 +1,13 @@
 {
-  "phase": "2B",
+  "phase": "2D",
   "productionCutover": false,
   "productionWrites": false,
   "authSource": "rtafnc-one-core",
   "sessionCookie": "__Host-rtafnc_session",
   "studentMasterLinkRequired": true,
+  "studentMasterLinkSource": "owner-approved-core-only",
+  "browserSelfLinkAllowed": false,
+  "localRoleAssignmentAllowed": false,
   "localAuthAllowed": false,
   "localLineSubjectStorageAllowed": false,
   "csrfRequiredForWrites": true,
@@ -35,5 +38,5 @@
       }
     }
   ],
-  "requiredControls": ["lineServerVerification", "coreSession", "studentMasterLink", "rbac", "csrf", "minimumNecessary", "audit", "originAllowlist", "requestValidation", "rateLimit", "noBrowserPersistence", "noStore"]
+  "requiredControls": ["lineServerVerification", "coreSession", "ownerApprovedStudentMasterLink", "rbac", "csrf", "minimumNecessary", "audit", "originAllowlist", "requestValidation", "rateLimit", "noBrowserPersistence", "noStore"]
 }
