@@ -1,0 +1,42 @@
+{
+  "phase": "2E",
+  "productionCutover": false,
+  "productionWrites": false,
+  "authSource": "rtafnc-one-core",
+  "sessionCookie": "__Host-rtafnc_session",
+  "studentMasterLinkRequired": true,
+  "studentMasterLinkSource": "owner-approved-core-only",
+  "browserSelfLinkAllowed": false,
+  "localRoleAssignmentAllowed": false,
+  "localAuthAllowed": false,
+  "localLineSubjectStorageAllowed": false,
+  "csrfRequiredForWrites": true,
+  "modules": [
+    {
+      "module": "leave",
+      "gatewayPath": "/api/leave",
+      "classification": "restricted-personal",
+      "serverOnly": ["studentMaster", "lineUserId", "leaveRequests", "approvalAudit"],
+      "requiredPermissions": {
+        "selfRead": "leave:self:read",
+        "selfSubmit": "leave:self:submit",
+        "review": "leave:review"
+      }
+    },
+    {
+      "module": "hospital",
+      "gatewayPath": "/api/hospital",
+      "classification": "highly-sensitive-health",
+      "coreD1HealthPayloadAllowed": false,
+      "privateHealthStoreRequired": true,
+      "serverOnly": ["studentMaster", "lineUserId", "symptoms", "hospitalVisits", "appointments", "medicalEvidence", "healthAudit"],
+      "requiredPermissions": {
+        "selfRead": "hospital:self:read",
+        "selfIntake": "hospital:self:intake",
+        "clinicalRead": "hospital:clinical:read",
+        "clinicalWrite": "hospital:clinical:write"
+      }
+    }
+  ],
+  "requiredControls": ["lineServerVerification", "coreSession", "ownerApprovedStudentMasterLink", "rbac", "csrf", "minimumNecessary", "audit", "originAllowlist", "requestValidation", "rateLimit", "noBrowserPersistence", "noStore"]
+}
